@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CascadeLens | Failure Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-icon">⌘</span>
+            <span>CascadeLens</span>
+        </div>
+        <div class="status">
+            <span class="status-dot"></span>
+            Simulation Environment
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <div>
+                <p class="eyebrow">SYSTEM RELIABILITY LAB</p>
+                <h1>Failure Impact <span>Analyzer</span></h1>
+                <p class="subtitle">
+                    Simulate system failures, trace dependencies,
+                    and understand cascading impact.
+                </p>
+            </div>
+            <button id="resetBtn" class="btn secondary">
+                ↻ Reset System
+            </button>
+        </section>
+
+        <section class="stats">
+            <article class="stat-card">
+                <p>Total Components</p>
+                <h2 id="totalCount">5</h2>
+            </article>
+            <article class="stat-card">
+                <p>Operational</p>
+                <h2 id="operationalCount">5</h2>
+            </article>
+            <article class="stat-card">
+                <p>Failed Components</p>
+                <h2 id="failedCount">0</h2>
+            </article>
+            <article class="stat-card">
+                <p>System Health</p>
+                <h2 id="healthValue">100%</h2>
+            </article>
+        </section>
+
+        <section class="workspace">
+
+            <div class="panel graph-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Dependency Graph</h2>
+                        <p>Click a component to select it.</p>
+                    </div>
+                    <span class="live-label">● LIVE</span>
+                </div>
+
+                <div class="graph" id="graph">
+
+                    <svg class="connections"
+                         viewBox="0 0 600 390"
+                         preserveAspectRatio="none"
+                         aria-hidden="true">
+                        <defs>
+                            <marker id="arrow"
+                                markerWidth="8" markerHeight="8"
+                                refX="6" refY="3"
+                                orient="auto">
+                                <path d="M0,0 L0,6 L6,3 z"
+                                    fill="#64748b"></path>
+                            </marker>
+                        </defs>
+
+                        <path class="edge" data-from="database"
+                              data-to="payment"
+                              d="M300 75 L300 130"></path>
+                        <path class="edge" data-from="payment"
+                              data-to="order"
+                              d="M300 185 L300 240"></path>
+                        <path class="edge" data-from="order"
+                              data-to="checkout"
+                              d="M300 295 L300 345"></path>
+                        <path class="edge" data-from="checkout"
+                              data-to="app"
+                              d="M350 345 C470 345 500 320 500 270 L500 120 C500 85 455 75 400 75"></path>
+                    </svg>
+
+                    <button class="node" data-node="database"
+                            style="left:50%;top:9%">
+                        <span class="node-icon">▤</span>
+                        <strong>Database</strong>
+                        <small>Operational</small>
+                    </button>
+
+                    <button class="node" data-node="payment"
+                            style="left:50%;top:28%">
+                        <span class="node-icon">＄</span>
+                        <strong>Payment</strong>
+                        <small>Operational</small>
+                    </button>
+
+                    <button class="node" data-node="order"
+                            style="left:50%;top:56%">
+                        <span class="node-icon">▣</span>
+                        <strong>Order Service</strong>
+                        <small>Operational</small>
+                    </button>
+
+                    <button class="node" data-node="checkout"
+                            style="left:50%;top:82%">
+                        <span class="node-icon">🛒</span>
+                        <strong>Checkout</strong>
+                        <small>Operational</small>
+                    </button>
+
+                    <button class="node app-node" data-node="app"
+                            style="left:83%;top:28%">
+                        <span class="node-icon">▦</span>
+                        <strong>Shopping App</strong>
+                        <small>Operational</small>
+                    </button>
+
+                </div>
+
+                <div class="legend">
+                    <span><i class="legend-dot green"></i> Operational</span>
+                    <span><i class="legend-dot red"></i> Failed</span>
+                    <span><i class="legend-dot yellow"></i> Selected</span>
+                </div>
+            </div>
+
+            <aside class="panel control-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Failure Controls</h2>
+                        <p>Manage the simulation.</p>
+                    </div>
+                </div>
+
+                <label for="componentSelect">Select Component</label>
+                <select id="componentSelect">
+                    <option value="database">Database</option>
+                    <option value="payment" selected>Payment</option>
+                    <option value="order">Order Service</option>
+                    <option value="checkout">Checkout</option>
+                    <option value="app">Shopping App</option>
+                </select>
+
+                <button id="failBtn" class="btn danger">
+                    ⚡ Inject Failure
+                </button>
+
+                <div class="backup-box">
+                    <div>
+                        <strong>Backup System</strong>
+                        <p>Enable recovery protection</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="backupToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="health-box">
+                    <div class="health-heading">
+                        <span>System Health</span>
+                        <strong id="healthLabel">100%</strong>
+                    </div>
+                    <div class="health-track">
+                        <div id="healthBar" class="health-fill"></div>
+                    </div>
+                </div>
+
+                <div id="message" class="message">
+                    All components are operational.
+                </div>
+            </aside>
+
+        </section>
+
+        <section class="panel event-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Event Log</h2>
+                    <p>Simulation activity and failure history.</p>
+                </div>
+                <span class="live-label">ACTIVITY</span>
+            </div>
+            <div id="eventLog" class="event-log">
+                <div class="event">
+                    <span class="event-dot green"></span>
+                    <div>
+                        <strong>System initialized</strong>
+                        <p>All five components are operational.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            CascadeLens · Software Reliability Simulation
+        </footer>
+
+    </main>
+</body>
+</html>
